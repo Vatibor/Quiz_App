@@ -34,7 +34,8 @@ function getQuestions()
     return $stid;
 }
 
-function getCategory(){
+function getCategory()
+{
     if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
         return false;
     }
@@ -54,7 +55,8 @@ function getCategory(){
     return $stid;
 }
 
-function getStatistic(){
+function getStatistic()
+{
     if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
         return false;
     }
@@ -131,6 +133,56 @@ function categoryAdd($K_Kaid, $K_nev) {
     oci_close($conn);
 
     return $sikeres;
+}
+
+function getUsernames()
+{
+    if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
+        return false;
+    }
+
+    $stid = oci_parse($conn, 'SELECT nev FROM Felhasznalo');
+
+    if (!$stid) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    $r = oci_execute($stid);
+    if (!$r) {
+        $e = oci_error($stid);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    oci_close($conn);
+    return $stid;
+}
+
+function addNewUser($id, $name, $password)
+{
+    if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
+        return false;
+    }
+
+    $admin = 0; 
+
+    $stmt = oci_parse($conn, 'INSERT INTO Felhasznalo (FID, Admine, nev, jelszo) 
+                                VALUES (:1, :2, :3, :4)');
+
+    oci_bind_by_name($stmt, ':1', $id);
+    oci_bind_by_name($stmt, ':2', $admin);
+    oci_bind_by_name($stmt, ':3', $name);
+    oci_bind_by_name($stmt, ':4', $password);
+
+    $success = oci_execute($stmt);
+    if (!$success) {
+        $e = oci_error($stmt);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    oci_free_statement($stmt);
+    oci_close($conn);
+
+    return $success;
+
 }
 
 ?>

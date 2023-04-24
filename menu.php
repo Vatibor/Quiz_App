@@ -14,7 +14,7 @@ function menu() {
     $menustr .= '<a href="#">Login</a>';
     $menustr .= '</span>';
     $menustr .= '<span style="color:blue;font-weight:bold; padding:5px;">';
-    $menustr .= '<a href="#">Register</a>';
+    $menustr .= '<a href="registration.php">Register</a>';
     $menustr .= '</span>';
     $menustr .= '<span style="color:blue;font-weight:bold; padding:5px;">';
     $menustr .= '<a href="questionadd.php">Add question</a>';
