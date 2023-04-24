@@ -16,6 +16,12 @@ function menu() {
     $menustr .= '<span style="color:blue;font-weight:bold; padding:5px;">';
     $menustr .= '<a href="#">Register</a>';
     $menustr .= '</span>';
+    $menustr .= '<span style="color:blue;font-weight:bold; padding:5px;">';
+    $menustr .= '<a href="questionadd.php">Add question</a>';
+    $menustr .= '</span>';
+    $menustr .= '<span style="color:blue;font-weight:bold; padding:5px;">';
+    $menustr .= '<a href="categoryAdd.php">Add category</a>';
+    $menustr .= '</span>';
     
 
     
