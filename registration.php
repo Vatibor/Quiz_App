@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once('menu.php');
 include_once('functions.php');
 
@@ -41,8 +42,8 @@ if (isset($_POST["submit"])) { // submit pressed
       $errors[] = "The username is already taken!";
   }
   oci_free_statement($users);
-  
-  if(count($errors) === 0){
+
+  if (count($errors) === 0) {
     addNewUser($id, $name, $password);
     $success = TRUE;
   } else {
@@ -57,15 +58,18 @@ if (isset($_POST["submit"])) { // submit pressed
 
 ?>
 <!DOCTYPE html>
-<html lang="en">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 
 <head>
+  <html lang="en">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+
+  
   <title>Quiz App - Registration</title>
 </head>
 
@@ -76,17 +80,15 @@ if (isset($_POST["submit"])) { // submit pressed
     <hr />
   </header>
   <main>
-    <div>
-      <h1>Quiz App - Registration</h1>
+    <div class="">
+      <h1 class="text-center">Quiz App - Registration</h1>
     </div>
 
 
-    <div class="panel">
-      <br>
+    <div class="container">
       <?php
-      if (isset($siker) && $siker === TRUE) { // ha nem volt hiba, akkor a regisztráció sikeres
-        echo "<p>Sikeres regisztráció! Átirányítás...</p>";
-
+      if (isset($success) && $success === TRUE) { // ha nem volt hiba, akkor a regisztráció sikeres
+        echo "<p>Registration successful! Redirecting...</p>";
         header("Location: index.php");
       } else { // az esetleges hibákat kiírjuk egy-egy bekezdésben
         foreach ($errors as $error) {
@@ -94,29 +96,35 @@ if (isset($_POST["submit"])) { // submit pressed
         }
       }
       ?>
+    </div>
 
 
-      <div class="container p-5">
-        <form action="registration.php" method="post" enctype="multipart/form-data">
-          <div class="mb-3">
-            <label for="name" class="form-label">User Name</label>
-            <input type="name" class="form-control" id="name" name="name" required>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-          </div>
-          <div class="mb-3">
-            <label for="re-password" class="form-label">Re-Password</label>
-            <input type="password" class="form-control" id="re-password" name="password2" required>
-          </div>
-          <!-- <div class="mb-3 form-check">
+    <div class="container p-5">
+      <form action="registration.php" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="name" class="form-label">User Name<span class="text-red">*</span></label>
+          <input type="name" class="form-control" id="name" name="name" required aria-describedby="nameHelp">
+          <div id="nameHelp" class="form-text">The username can only contain letters and numbers and maximun length is
+            30 characters!</div>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password<span class="text-red">*</span></label>
+          <input type="password" class="form-control" id="password" name="password" required required
+            aria-describedby="passwordHelp">
+          <div id="nameHelp" class="form-text">The password must contain at least one uppercase letter and one number
+            and minimum length is 8 characters!</div>
+        </div>
+        <div class="mb-3">
+          <label for="re-password" class="form-label">Re-Password<span class="text-red">*</span></label>
+          <input type="password" class="form-control" id="re-password" name="password2" required>
+        </div>
+        <!-- <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="exampleCheck1">
         <label class="form-check-label" for="exampleCheck1">Check me out</label>
       </div> -->
-          <button type="submit" class="btn btn-primary" name="submit">Registration</button>
-        </form>
-      </div>
+        <button type="submit" class="btn btn-primary" name="submit">Registration</button>
+      </form>
+    </div>
 
   </main>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

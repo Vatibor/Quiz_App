@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once('data.php');
 include_once('menu.php');
 ?>
@@ -20,6 +21,12 @@ include_once('menu.php');
   </header>
   <main>
     <h1>Quiz App</h1>
+    <?php if (isset($_SESSION["user"])) { 
+       echo '<pre>';
+       print_r($_SESSION["user"]);
+       echo '</pre>';
+    } 
+    ?>
   </main>
 </body>
 

@@ -2,7 +2,7 @@
 
 function connect_db()
 {
-    $conn = oci_connect('system', 'oracle', 'localhost/XE', 'AL32UTF8');
+    $conn = oci_connect('VARGA', 'varga', 'localhost/XE', 'AL32UTF8');
     if (!$conn) {
         $e = oci_error();
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -141,7 +141,7 @@ function getUsernames()
         return false;
     }
 
-    $stid = oci_parse($conn, 'SELECT nev FROM Felhasznalo');
+    $stid = oci_parse($conn, 'SELECT nev, jelszo FROM Felhasznalo');
 
     if (!$stid) {
         $e = oci_error($conn);
