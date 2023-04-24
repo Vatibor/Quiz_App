@@ -65,6 +65,14 @@ include_once('functions.php');
       $questions = getQuestions();
 
       while ($oneRow = oci_fetch_array($questions, OCI_ASSOC + OCI_RETURN_NULLS)) {
+        echo '<pre>';
+        print_r($oneRow);
+        echo '</pre>';
+        foreach ($oneRow as $item) {
+        echo $item." ";
+        }
+
+
         echo '<tr>';
         echo '<td>' . $oneRow["KERDES"] . '</td>';
         echo '<td>' . $oneRow["A_VALASZ"] . '</td>';

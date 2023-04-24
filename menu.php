@@ -15,7 +15,7 @@
         <?php } ?>
         
         <?php if (isset($_SESSION["user"])) { ?>
-        <li class="nav-item"><a class="nav-link" href="logout.php">Kijelentkezés</a></li>
+        <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
         <!-- <p>print_r($_SESSION["user"]);</p> -->
         <?php } ?>
         

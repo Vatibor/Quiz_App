@@ -1,6 +1,6 @@
 <?php
-include_once('data.php');
-include_once('menu.php');
+// include_once('data.php');
+// include_once('menu.php');
 include_once('functions.php');
 ?>
 <!DOCTYPE html>
@@ -16,9 +16,7 @@ include_once('functions.php');
 
 <body>
 <header>
-    <hr />
-    <?php echo menu(); ?>
-    <hr />
+    <?php include 'menu.php'; ?>
 </header>
 <div>
     <form method="POST" action="addcat.php" accept-charset="utf-8">
