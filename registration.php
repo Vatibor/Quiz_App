@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('menu.php');
+// include_once('menu.php');
 include_once('functions.php');
 
 $users = getUsernames();
@@ -50,12 +50,6 @@ if (isset($_POST["submit"])) { // submit pressed
     $success = FALSE;
   }
 }
-
-
-
-
-
-
 ?>
 <!DOCTYPE html>
 
@@ -75,9 +69,7 @@ if (isset($_POST["submit"])) { // submit pressed
 
 <body>
   <header>
-    <hr />
-    <?php echo menu(); ?>
-    <hr />
+    <?php include 'menu.php'; ?>
   </header>
   <main>
     <div class="">

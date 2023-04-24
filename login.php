@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('menu.php');
+// include_once('menu.php');
 include_once('functions.php');
 
 $users = getUsernames();
@@ -28,12 +28,6 @@ if (isset($_POST["login"])) {
    
   }
 }
-
-
-
-
-
-
 ?>
 <!DOCTYPE html>
 
@@ -52,12 +46,10 @@ if (isset($_POST["login"])) {
 
 <body>
   <header>
-    <hr />
-    <?php echo menu(); ?>
-    <hr />
+    <?php include 'menu.php'; ?>
   </header>
   <main>
-    <div>
+    <div class="pt-3">
       <h1 class="text-center">Quiz App - Login</h1>
     </div>
 
