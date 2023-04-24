@@ -76,12 +76,35 @@ function getStatistic()
     oci_close($conn);
     return $stid;
 }
-function questionAdd($K_Keid, $K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint) {
+function questionAdd($K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint){
     $conn = connect_db();
     if (!$conn) {
         return false;
     }
 
+    // Lekérjük a következő szabad KeID értéket
+    $stmt = oci_parse($conn, 'SELECT KeID FROM (
+                                SELECT KeID+1 AS KeID
+                                FROM Kerdes
+                                WHERE NOT EXISTS (SELECT 1 FROM Kerdes k2 WHERE k2.KeID = Kerdes.KeID+1)
+                                ORDER BY KeID
+                            ) WHERE ROWNUM = 1');
+    if (!$stmt) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    $sikeres = oci_execute($stmt);
+    if (!$sikeres) {
+        $e = oci_error($stmt);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    // Változóban tároljuk az új KeID értéket
+    $row = oci_fetch_array($stmt, OCI_ASSOC + OCI_RETURN_NULLS);
+    $K_Keid = $row['KEID'];
+
+    // Beszúrjuk az új kérdést
     $stmt = oci_parse($conn, 'INSERT INTO Kerdes (KeID, kerdes, A_valasz, B_valasz, C_valasz, D_valasz, helyes_v, szint) VALUES (:1, :2, :3, :4, :5, :6, :7, :8)');
     if (!$stmt) {
         $e = oci_error($conn);
@@ -103,25 +126,24 @@ function questionAdd($K_Keid, $K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint)
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
     }
 
-    oci_free_statement($stmt);
     oci_close($conn);
 
     return $sikeres;
 }
-function categoryAdd($K_Kaid, $K_nev) {
+
+function categoryAdd($K_nev) {
     $conn = connect_db();
     if (!$conn) {
         return false;
     }
 
-    $stmt = oci_parse($conn, 'INSERT INTO kategoria (kaid, nev) VALUES  (:1, :2)');
+    $stmt = oci_parse($conn, 'INSERT INTO kategoria (kaid, nev) VALUES  (kategoria_seq.NEXTVAL, :1)');
     if (!$stmt) {
         $e = oci_error($conn);
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
     }
 
-    oci_bind_by_name($stmt, ':1', $K_Kaid);
-    oci_bind_by_name($stmt, ':2', $K_nev);
+    oci_bind_by_name($stmt, ':1', $K_nev);
 
     $sikeres = oci_execute($stmt);
     if (!$sikeres) {

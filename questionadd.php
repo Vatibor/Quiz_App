@@ -23,10 +23,17 @@ include_once('functions.php');
     <header>
         <?php include 'menu.php'; ?>
     </header>
-    <div>
+    <div class="format">
         <form method="POST" action="adding.php" accept-charset="utf-8">
-            <label>Question ID: </label>
-            <input type="text" name="Keid">
+            <label for="category">Category:</label>
+            <select id="category" name="category">
+                <?php
+                $categories = getCategory();
+                while ($oneRow = oci_fetch_array($categories, OCI_ASSOC + OCI_RETURN_NULLS)) {
+                    echo "<option value='" . strtolower($oneRow["NEV"]) . "'>" . $oneRow["NEV"] . "</option>";
+                }
+                ?>
+            </select>
             <br>
             <label>Question:</label>
             <input type="text" name="kerdes">
@@ -46,7 +53,7 @@ include_once('functions.php');
             <label>Right answer:</label>
             <input type="text" name="Helyes_v">
             <br>
-            <label>Question difficulty (1-easy, 2-common, 3-hard):</label>
+            <label>Question difficulty (1-easy, 2-medium, 3-hard):</label>
             <input type="number" min="1" max="3" name="szint">
             <br>
             <input type="submit" name="submit" value="Question adding...">

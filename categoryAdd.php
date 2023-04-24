@@ -21,14 +21,11 @@ include_once('functions.php');
     <hr />
 </header>
 <div>
-    <form method="POST" action="adding.php" accept-charset="utf-8">
-        <label>Category ID: </label>
-        <input type="text" name="Kaid">
-        <br>
+    <form method="POST" action="addcat.php" accept-charset="utf-8">
         <label>Category name:</label>
         <input type="text" name="nev">
         <br>
-        <input type="submit" name="submit" value="Category adding...">
+        <input type="submit" name="category" value="Category adding...">
     </form>
 </div>
 </body>
