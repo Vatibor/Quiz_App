@@ -163,7 +163,7 @@ function getUsernames()
         return false;
     }
 
-    $stid = oci_parse($conn, 'SELECT nev, jelszo FROM Felhasznalo');
+    $stid = oci_parse($conn, 'SELECT admine, nev, jelszo FROM Felhasznalo');
 
     if (!$stid) {
         $e = oci_error($conn);

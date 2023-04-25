@@ -19,6 +19,7 @@ if (isset($_POST["login"])) {
       if ($oneRow["NEV"] === $name && $oneRow["JELSZO"] === $password) { // If the name provided in the form matches that of a registered user...
         $message = "Login successful!";
         $_SESSION["user"] = $oneRow["NEV"];
+        $_SESSION["admine"] = $oneRow["ADMINE"];
         header("Location: index.php");
       } else {
         $message = "Login failed! The login credentials are incorrect!";

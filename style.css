@@ -13,7 +13,7 @@ th, td {
 }
 
 tr:nth-child(even){
-    background-color: #d0cece
+    background-color: #d0cece !important;
 }
 .format{
     text-align: center;
@@ -21,7 +21,7 @@ tr:nth-child(even){
     margin-right: auto;
  }
 th {
-    background-color: #333;
+    background-color: #333 !important;
     color: white;
 }
 li {
@@ -71,4 +71,8 @@ input[type=submit]:hover {
 
 .text-red {
     color: var(--bs-danger);
+}
+
+.w-10 {
+    width: 10%;
 }

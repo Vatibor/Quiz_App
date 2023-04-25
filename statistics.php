@@ -24,8 +24,8 @@ include_once('functions.php');
         <?php include 'menu.php'; ?>
     </header>
     <main>
-        <h1>Statistics</h1>
-
+        <h1 class="text-center p-3">Statistics</h1>
+        <div class="container">
         <table border="1">
             <tr>
                 <th>Username</th>
@@ -53,6 +53,7 @@ include_once('functions.php');
             oci_free_statement($statitics);
             ?>
         </table>
+        </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
