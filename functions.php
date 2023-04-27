@@ -2,7 +2,7 @@
 
 function connect_db()
 {
-    $conn = oci_connect('VARGA', 'varga', 'localhost/XE', 'AL32UTF8');
+    $conn = oci_connect('Kriszti', 'KRISZTI', 'localhost/XE', 'AL32UTF8');
     if (!$conn) {
         $e = oci_error();
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -205,6 +205,35 @@ function addNewUser($id, $name, $password)
 
     return $success;
 
+}
+
+
+function setQuestions($chosencategory, $chosendifficulty){
+    if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
+        return false;
+    }
+
+    $stid = oci_parse($conn, 'SELECT k.kerdes, k.A_valasz, k.B_valasz, k.C_valasz, k.D_valasz, k.helyes_v as "helyes_v"
+                FROM Kerdes k
+                INNER JOIN tartalmaz t ON k.KeID = t.KeID
+                INNER JOIN Kategoria ka ON t.KaID = ka.KaID
+                WHERE ka.nev =:1 and k.szint =:2');
+
+    //$strtolower = strtolower($chosencategory);
+    oci_bind_by_name($stid,':1', $chosencategory);
+    oci_bind_by_name($stid,':2',$chosendifficulty);
+
+    if (!$stid) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    $r = oci_execute($stid);
+    if (!$r) {
+        $e = oci_error($stid);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    oci_close($conn);
+    return $stid;
 }
 
 ?>
