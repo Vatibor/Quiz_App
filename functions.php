@@ -2,7 +2,7 @@
 
 function connect_db()
 {
-    $conn = oci_connect('system', 'oracle', 'localhost/XE', 'AL32UTF8');
+    $conn = oci_connect('Kriszti', 'KRISZTI', 'localhost/XE', 'AL32UTF8');
     if (!$conn) {
         $e = oci_error();
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -268,6 +268,37 @@ function setQuestions($chosencategory, $chosendifficulty){
     }
     oci_close($conn);
     return $stid;
+}
+
+function randomizeQuestionArray(){
+    $questions = setQuestions(ucfirst($_SESSION["kategoria"]), $_SESSION["nehezseg"]);
+    $randomizedQuestions = array();
+    $numberOfQuestions = 5;
+
+    while ($question = oci_fetch_array($questions, OCI_ASSOC + OCI_RETURN_NULLS)){
+        array_push($randomizedQuestions, $question);
+    }
+    oci_free_statement($questions);
+
+    $randomKeys = array_rand($randomizedQuestions, $numberOfQuestions);
+    shuffle($randomKeys);
+    $solution = array();
+
+    for ($i = 0; $i<$numberOfQuestions; $i++){
+        $currentKey = $randomKeys[$i];
+        array_push($solution, $randomizedQuestions[$currentKey]);
+    }
+    //print_r($solution);
+    return $solution;
+}
+
+function printOptionsRandomly($letter, $i, $questionArray){
+    //echo '<input type="radio" id="A_valasz' . $i . '" name="kivalasztott' . $i . '" value="'.$questionarray["A_VALASZ"].'" ><label for="A_valasz' . $i . '">' . $questionarray["A_VALASZ"] . '</label><br>';
+    echo '<input type="radio" 
+    id="' . $letter . '_valasz' . $i . '" 
+    name="kivalasztott' . $i . '" 
+    value="'.$questionArray[$letter."_VALASZ"].'" >
+    <label for="' . $letter . '_valasz' . $i . '">' . $questionArray[$letter . "_VALASZ"] . '</label><br>';
 }
 
 ?>
