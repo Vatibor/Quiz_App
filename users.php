@@ -13,7 +13,7 @@ include_once('functions.php');
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style_users.css">
   <title>Quiz App - Users</title>
 </head>
 
@@ -23,12 +23,13 @@ include_once('functions.php');
   </header>
   <main>
     <h1 class="text-center p-3">Quiz App - Users</h1>
-    <div class="container w-50">
+    <div class="container w-75">
       <table border="1" class="table table-hover">
         <thead>
           <tr>
-            <th>Username</th>
+            <th colspan="3">Username</th>
           </tr>
+          
         </thead>
         <tbody>
           <?php
@@ -37,8 +38,18 @@ include_once('functions.php');
 
           while ($oneRow = oci_fetch_array($users, OCI_ASSOC + OCI_RETURN_NULLS)) {
             echo '<tr>';
-            echo '<td>' . $oneRow["NEV"] . '</td>';
+            echo '<td class="align-middle">' . $oneRow["NEV"] . '</td>';
+            echo '<td class="w-10"><button type="button" class="btn btn-warning">Modify</button></td>';
+            echo '
+              <td class="w-10">
+                <form method="POST" action=deleteuser.php>
+                  <input type="hidden" name="id" value="'.$oneRow["FID"].'" />
+                  <input type="submit" class="btn btn-danger" value="Delete"></input>
+                </form>
+              
+              </td>';
             echo '</tr>';
+
           }
           oci_free_statement($users);
           ?>
@@ -50,6 +61,7 @@ include_once('functions.php');
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
     crossorigin="anonymous"></script>
+ 
 </body>
 
 </html>

@@ -2,7 +2,7 @@
 
 function connect_db()
 {
-    $conn = oci_connect('Kriszti', 'KRISZTI', 'localhost/XE', 'AL32UTF8');
+    $conn = oci_connect('VARGA', 'varga', 'localhost/XE', 'AL32UTF8');
     if (!$conn) {
         $e = oci_error();
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -137,7 +137,7 @@ function categoryAdd($K_nev) {
         return false;
     }
 
-    $stmt = oci_parse($conn, 'INSERT INTO kategoria (kaid, nev) VALUES  (kategoria_seq.NEXTVAL, :1)');
+    $stmt = oci_parse($conn, 'INSERT INTO kategoria (kaid, nev) VALUES  (category_seq.NEXTVAL, :1)');
     if (!$stmt) {
         $e = oci_error($conn);
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -163,7 +163,7 @@ function getUsernames()
         return false;
     }
 
-    $stid = oci_parse($conn, 'SELECT admine, nev, jelszo FROM Felhasznalo');
+    $stid = oci_parse($conn, 'SELECT FID, admine, nev, jelszo FROM Felhasznalo');
 
     if (!$stid) {
         $e = oci_error($conn);
@@ -222,6 +222,27 @@ function setQuestions($chosencategory, $chosendifficulty){
     //$strtolower = strtolower($chosencategory);
     oci_bind_by_name($stid,':1', $chosencategory);
     oci_bind_by_name($stid,':2',$chosendifficulty);
+
+    if (!$stid) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    $r = oci_execute($stid);
+    if (!$r) {
+        $e = oci_error($stid);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    oci_close($conn);
+    return $stid;
+}
+
+function delete_user($FID){
+    if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
+        return false;
+    }
+
+    $stid = oci_parse($conn, 'DELETE FROM Felhasznalo WHERE FID = :1');
+    oci_bind_by_name($stid, ':1', $FID);
 
     if (!$stid) {
         $e = oci_error($conn);
