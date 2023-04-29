@@ -2,7 +2,7 @@
 
 function connect_db()
 {
-    $conn = oci_connect('Kriszti', 'KRISZTI', 'localhost/XE', 'AL32UTF8');
+    $conn = oci_connect('system', 'oracle', 'localhost/XE', 'AL32UTF8');
     if (!$conn) {
         $e = oci_error();
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -76,7 +76,7 @@ function getStatistic()
     oci_close($conn);
     return $stid;
 }
-function questionAdd($K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint){
+function questionAdd($K_kaid,$K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint){
     $conn = connect_db();
     if (!$conn) {
         return false;
@@ -125,7 +125,42 @@ function questionAdd($K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint){
         $e = oci_error($stmt);
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
     }
+    oci_free_statement($stmt);
 
+    $stmt = oci_parse($conn, 'SELECT KAID FROM Kategoria WHERE NEV = :1');
+    if (!$stmt) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    oci_bind_by_name($stmt, ':1', $K_kaid);
+
+    $r = oci_execute($stmt);
+    if (!$r) {
+        $e = oci_error($stmt);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    $oneRow = oci_fetch_array($stmt, OCI_ASSOC + OCI_RETURN_NULLS);
+
+    $Kat = $oneRow['KAID'];
+    oci_free_statement($stmt);
+
+    $stmt = oci_parse($conn, 'INSERT INTO TARTALMAZ (KAID, KEID) VALUES (:1,:2)');
+    if (!$stmt) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    oci_bind_by_name($stmt, ':1', $Kat, -1, SQLT_INT);
+    oci_bind_by_name($stmt, ':2', $K_Keid,-1, SQLT_INT);
+
+    $sikeres = oci_execute($stmt);
+    if (!$sikeres) {
+        $e = oci_error($stmt);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    oci_free_statement($stmt);
     oci_close($conn);
 
     return $sikeres;
@@ -137,7 +172,7 @@ function categoryAdd($K_nev) {
         return false;
     }
 
-    $stmt = oci_parse($conn, 'INSERT INTO kategoria (kaid, nev) VALUES  (kategoria_seq.NEXTVAL, :1)');
+    $stmt = oci_parse($conn, 'INSERT INTO kategoria (kaid, nev) VALUES  (category_seq.NEXTVAL, :1)');
     if (!$stmt) {
         $e = oci_error($conn);
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -206,7 +241,6 @@ function addNewUser($id, $name, $password)
     return $success;
 
 }
-
 
 function setQuestions($chosencategory, $chosendifficulty){
     if (!($conn = connect_db())) { // If we couldn't connect, then we return false.

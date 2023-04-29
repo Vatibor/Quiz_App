@@ -30,9 +30,10 @@ include_once('functions.php');
                 <?php
                 $categories = getCategory();
                 while ($oneRow = oci_fetch_array($categories, OCI_ASSOC + OCI_RETURN_NULLS)) {
-                    echo "<option value='" . strtolower($oneRow["NEV"]) . "'>" . $oneRow["NEV"] . "</option>";
+                    echo "<option value='" . $oneRow["NEV"] . "'>" . $oneRow["NEV"] . "</option>";
                 }
                 ?>
+
             </select>
             <br>
             <label>Question:</label>

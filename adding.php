@@ -9,9 +9,11 @@ if (isset($_POST["submit"])) {
     $K_D = $_POST["D_valasz"];
     $K_H = $_POST["Helyes_v"];
     $K_szint = $_POST["szint"];
+    $K_kaid=$_POST["category"];
+    var_dump($_POST["category"]);
 
-    if ($K_kerdes && $K_A && $K_B && $K_C && $K_D && $K_H && $K_szint) {
-        $sikeres = questionAdd($K_kerdes, $K_A, $K_B, $K_C, $K_D, $K_H, $K_szint);
+    if ($K_kaid && $K_kerdes && $K_A && $K_B && $K_C && $K_D && $K_H && $K_szint) {
+        $sikeres = questionAdd($K_kaid,$K_kerdes, $K_A, $K_B, $K_C, $K_D, $K_H, $K_szint);
         if ($sikeres) {
             header('Location: index.php');
             exit;

@@ -65,12 +65,12 @@ include_once('functions.php');
       $questions = getQuestions();
 
       while ($oneRow = oci_fetch_array($questions, OCI_ASSOC + OCI_RETURN_NULLS)) {
-        // echo '<pre>';
-        // print_r($oneRow);
-        // echo '</pre>';
-        // foreach ($oneRow as $item) {
-        // echo $item." ";
-        // }
+         //echo '<pre>';
+         //print_r($oneRow);
+         //echo '</pre>';
+         //foreach ($oneRow as $item) {
+         //echo $item." ";
+         //}
 
 
         echo '<tr>';
@@ -82,6 +82,15 @@ include_once('functions.php');
         echo '<td>' . $oneRow["NEV"] . '</td>';
         echo '<td>' . $oneRow["SZINT"] . '</td>';
         echo '</tr>';
+        echo '<td>' . $oneRow["SZINT"] . '</td>';
+        echo '<td>';
+        echo '<form action="questionDel.php" method="POST">';
+        echo '<input type="hidden" name="kerdes" value="' . $oneRow['KERDES'] . '">';
+        echo '<button type="submit">Törlés</button>';
+        echo '</form>';
+        echo '</td>';
+        echo '</tr>';
+
       }
       oci_free_statement($questions);
       ?>
