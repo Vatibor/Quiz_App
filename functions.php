@@ -76,7 +76,7 @@ function getStatistic()
     oci_close($conn);
     return $stid;
 }
-function questionAdd($K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint){
+function questionAdd($K_kaid,$K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint){
     $conn = connect_db();
     if (!$conn) {
         return false;
@@ -125,7 +125,42 @@ function questionAdd($K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint){
         $e = oci_error($stmt);
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
     }
+    oci_free_statement($stmt);
 
+    $stmt = oci_parse($conn, 'SELECT KAID FROM Kategoria WHERE NEV = :1');
+    if (!$stmt) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    oci_bind_by_name($stmt, ':1', $K_kaid);
+
+    $r = oci_execute($stmt);
+    if (!$r) {
+        $e = oci_error($stmt);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    $oneRow = oci_fetch_array($stmt, OCI_ASSOC + OCI_RETURN_NULLS);
+
+    $Kat = $oneRow['KAID'];
+    oci_free_statement($stmt);
+
+    $stmt = oci_parse($conn, 'INSERT INTO TARTALMAZ (KAID, KEID) VALUES (:1,:2)');
+    if (!$stmt) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    oci_bind_by_name($stmt, ':1', $Kat, -1, SQLT_INT);
+    oci_bind_by_name($stmt, ':2', $K_Keid,-1, SQLT_INT);
+
+    $sikeres = oci_execute($stmt);
+    if (!$sikeres) {
+        $e = oci_error($stmt);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    oci_free_statement($stmt);
     oci_close($conn);
 
     return $sikeres;
@@ -207,7 +242,6 @@ function addNewUser($id, $name, $password)
 
 }
 
-
 function setQuestions($chosencategory, $chosendifficulty){
     if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
         return false;
@@ -234,6 +268,37 @@ function setQuestions($chosencategory, $chosendifficulty){
     }
     oci_close($conn);
     return $stid;
+}
+
+function randomizeQuestionArray(){
+    $questions = setQuestions(ucfirst($_SESSION["kategoria"]), $_SESSION["nehezseg"]);
+    $randomizedQuestions = array();
+    $numberOfQuestions = 5;
+
+    while ($question = oci_fetch_array($questions, OCI_ASSOC + OCI_RETURN_NULLS)){
+        array_push($randomizedQuestions, $question);
+    }
+    oci_free_statement($questions);
+
+    $randomKeys = array_rand($randomizedQuestions, $numberOfQuestions);
+    shuffle($randomKeys);
+    $solution = array();
+
+    for ($i = 0; $i<$numberOfQuestions; $i++){
+        $currentKey = $randomKeys[$i];
+        array_push($solution, $randomizedQuestions[$currentKey]);
+    }
+    //print_r($solution);
+    return $solution;
+}
+
+function printOptionsRandomly($letter, $i, $questionArray){
+    //echo '<input type="radio" id="A_valasz' . $i . '" name="kivalasztott' . $i . '" value="'.$questionarray["A_VALASZ"].'" ><label for="A_valasz' . $i . '">' . $questionarray["A_VALASZ"] . '</label><br>';
+    echo '<input type="radio" 
+    id="' . $letter . '_valasz' . $i . '" 
+    name="kivalasztott' . $i . '" 
+    value="'.$questionArray[$letter."_VALASZ"].'" >
+    <label for="' . $letter . '_valasz' . $i . '">' . $questionArray[$letter . "_VALASZ"] . '</label><br>';
 }
 
 function delete_user($FID){

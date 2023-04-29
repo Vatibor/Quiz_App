@@ -1,7 +1,6 @@
 <?php
 session_start();
 include_once('data.php');
-// include_once('menu.php');
 include_once ('functions.php');
 ?>
 <!DOCTYPE html>
@@ -45,11 +44,6 @@ include_once ('functions.php');
         <?php
         $categories = getCategory();
         while ($oneRow = oci_fetch_array($categories, OCI_ASSOC + OCI_RETURN_NULLS)) {
-//          echo '<pre>';
-//          print_r($oneRow);
-//          echo '</pre>';
-//          foreach ($categories as $item) {
-//            echo $item." ";}
           echo "<option value='" . strtolower($oneRow["NEV"]) . "'>" . $oneRow["NEV"] . "</option>";
         }
         ?>
@@ -66,7 +60,7 @@ include_once ('functions.php');
         ?>
       </select>
       <br><br>
-      <input type="submit" value="Start">
+      <input type="submit" value="Start" name="questionButton">
     </form>
   </main>
 
@@ -74,113 +68,45 @@ include_once ('functions.php');
   <div>
     <?php
 
-    //    print_r($_POST);
     if(isset($_POST["difficulty"]) && $_POST["difficulty"]=="easy"){
-      $_SESSION["nehez"]=1;
+      $_SESSION["nehezseg"]=1;
     }
     if(isset($_POST["difficulty"]) && $_POST["difficulty"]=="medium"){
-      $_SESSION["nehez"]=2;
+      $_SESSION["nehezseg"]=2;
     }
     if(isset($_POST["difficulty"]) && $_POST["difficulty"]=="hard"){
-      $_SESSION["nehez"]=3;
+      $_SESSION["nehezseg"]=3;
     }
-
-
-//    echo "$nehez"
 
     if (isset($_POST["category"])){
       $_SESSION["kategoria"]= $_POST["category"];
     }
 
-    if (isset($_SESSION["kategoria"]) && isset($_SESSION["nehez"])) {
-      $questions = setQuestions(ucfirst($_SESSION["kategoria"]), $_SESSION["nehez"]);
-      //$questions = getQuestions();
-      //if ($_POST["category"] === "music") { //$_POST["category"] === "music"
-      $i = 0;
-      $h_valasz = array();
-      while ($questionarray = oci_fetch_array($questions, OCI_ASSOC + OCI_RETURN_NULLS)) {
-        if (!isset($_SESSION["$i"]) ){
-          //echo "hihi";
-          $_SESSION["$i"] = 1;
-        }
+    $letterArray = ["A", "B", "C", "D"];
+    if (isset($_POST['questionButton'])) {
 
-        if ($i == 5) {
-          break;
-        }
-//        if ($questionarray["szint"] == 1){
+      echo '<form method="post" action="answer_process.php">';
+
+      $randomizedQuestions = randomizeQuestionArray();
+
+      for ($i = 0; $i<count($randomizedQuestions); $i++){
+        $questionarray = $randomizedQuestions[$i];
         echo '<br>';
         echo '<div>';
-          //echo $_SESSION[$i];
-        if (isset($_SESSION["$i"]) && $_SESSION["$i"] != 0 ){
-          echo '<p>' . $questionarray["KERDES"] . '<br></p>';
-          echo '<form method="post" action="answer_process.php"><input type="submit" name="kivalasztott" value="' . $questionarray["A_VALASZ"] . '"><input type="hidden" name="valasz" value="' . $questionarray["helyes_v"] . '"><input type="hidden" name="sorszam" value="' . $i . '"></form><br>';
-          echo '<form method="post" action="answer_process.php"><input type="submit" name="kivalasztott" value="' . $questionarray["B_VALASZ"] . '"><input type="hidden" name="valasz" value="' . $questionarray["helyes_v"] . '"><input type="hidden" name="sorszam" value="' . $i . '"></form><br>';
-          echo '<form method="post" action="answer_process.php"><input type="submit" name="kivalasztott" value="' . $questionarray["C_VALASZ"] . '"><input type="hidden" name="valasz" value="' . $questionarray["helyes_v"] . '"><input type="hidden" name="sorszam" value="' . $i . '"></form><br>';
-          echo '<form method="post" action="answer_process.php"><input type="submit" name="kivalasztott" value="' . $questionarray["D_VALASZ"] . '"><input type="hidden" name="valasz" value="' . $questionarray["helyes_v"] . '"><input type="hidden" name="sorszam" value="' . $i . '"></form><br>';
-        //$h_valasz=[ $i => ];
+        echo '<p>' . $questionarray["KERDES"] . '<br></p>';
+
+        $randomLetterKeys = array_rand($letterArray, count($letterArray));
+        shuffle($randomLetterKeys);
+        for ($j = 0; $j<count($randomLetterKeys); $j++){
+          $currentKey = $randomLetterKeys[$j];
+          printOptionsRandomly($letterArray[$currentKey], $i, $questionarray);
         }
-        $h_valasz[] = $questionarray["helyes_v"];
+        echo '<input type="hidden" name="valasz' . $i . '" value="' . $questionarray["helyes_v"] . '"><input type="hidden" name="sorszam" value="' . $i . '">';
         echo '</div>';
-        $i++;
-
-//        }
       }
-      print_r($h_valasz);
-
-      oci_free_statement($questions);
+      echo '<input type="submit" value="Let\'s Go">';
+      echo '</form>';
     }
-    //}
-
-//    if (ucfirst($_POST["category"]) !== null) {
-//      $kat = ucfirst($_POST["category"]);
-//      var_dump($kat);
-//    } else {
-//      var_dump($_POST["category"]);
-//      return;
-//    }
-
-
-    //var_dump($_POST["difficulty"]);
-//    if (isset($_POST["difficulty"])) {
-//      $szint=$_POST["difficulty"];
-//      //var_dump($_POST["difficulty"]);
-//    } else {
-//      var_dump($_POST["difficulty"]);
-//      return;
-//    }
-    //var_dump($_POST["difficulty"]);
-//
-//    if($szint=="easy"){
-//      $szint=1;
-//    }
-//    if($szint=="medium"){
-//      $szint=2;
-//    }
-//    if($szint=="hard"){
-//      $szint=3;
-//    }
-    //var_dump($szint);
-//
-//    if (isset($_POST["submit"])) {
-//      $beallitott = setQuestions($kat,$szint);
-//      while ($questionarray = oci_fetch_array($beallitott, OCI_ASSOC + OCI_RETURN_NULLS)){
-////        echo '<pre>';
-////        print_r($questionarray);
-////        echo '</pre>';
-////        foreach ($questionarray as $item) {
-////          echo $item." ";
-////        }
-//        echo '<br>';
-//        echo '<div>';
-//        echo '<p>' . $questionarray["KERDES"] . '<br></p>';
-//        echo '<button>' . $questionarray["A_VALASZ"] . '<br></button>';
-//        echo '<button>' . $questionarray["B_VALASZ"] . '<br></button>';
-//        echo '<button>' . $questionarray["C_VALASZ"] . '<br></button>';
-//        echo '<button>' . $questionarray["D_VALASZ"] . '<br></button>';
-//        echo '</div>';
-//      }
-//      oci_free_statement($beallitott);
-//    }
 
     ?>
   </div>
