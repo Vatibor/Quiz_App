@@ -76,6 +76,7 @@ function getStatistic()
     oci_close($conn);
     return $stid;
 }
+
 function questionAdd($K_kaid,$K_kerdes, $k_A, $k_B, $k_C, $k_D, $k_H, $k_szint){
     $conn = connect_db();
     if (!$conn) {
@@ -213,6 +214,36 @@ function getUsernames()
     return $stid;
 }
 
+function create_statistics($id){
+    if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
+        return false;
+    }
+
+    $helyes_v = null;
+    $megval_v = null;
+
+    $stmt = oci_parse($conn, 'INSERT INTO Statisztika (SID, helyes_v_szam, megval_k_szam) 
+                                VALUES (:1, :2, :3)');
+    
+    oci_bind_by_name($stmt, ':1', $id);
+    oci_bind_by_name($stmt, ':2', $helyes_v);
+    oci_bind_by_name($stmt, ':3', $megval_v);
+
+    $success = oci_execute($stmt);
+    if (!$success) {
+        $e = oci_error($stmt);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    oci_free_statement($stmt);
+    oci_close($conn);
+
+    create_statistics($id);
+
+    return $success;
+
+}
+
 function addNewUser($id, $name, $password)
 {
     if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
@@ -235,8 +266,30 @@ function addNewUser($id, $name, $password)
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
     }
 
+    // create statistics
+    $helyes_v = 0;
+    $megval_v = 0;
+
+    $stmt = oci_parse($conn, 'INSERT INTO Statisztika (SID, helyes_v_szam, megval_k_szam) 
+                                VALUES (:1, :2, :3)');
+    
+    oci_bind_by_name($stmt, ':1', $id);
+    oci_bind_by_name($stmt, ':2', $helyes_v);
+    oci_bind_by_name($stmt, ':3', $megval_v);
+
+    $success = oci_execute($stmt);
+    if (!$success) {
+        $e = oci_error($stmt);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+
+
     oci_free_statement($stmt);
     oci_close($conn);
+
+    
+    // create_statistics($id);
 
     return $success;
 
@@ -301,6 +354,30 @@ function printOptionsRandomly($letter, $i, $questionArray){
     <label for="' . $letter . '_valasz' . $i . '">' . $questionArray[$letter . "_VALASZ"] . '</label><br>';
 }
 
+function delete_statistics($FID){
+    if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
+        return false;
+    }
+
+    $stid = oci_parse($conn, 'DELETE FROM Statisztika WHERE SID = :1');
+    oci_bind_by_name($stid, ':1', $FID);
+    
+    if (!$stid) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    $r = oci_execute($stid);
+    if (!$r) {
+        $e = oci_error($stid);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    oci_close($conn);
+
+    // delete_statistics($FID);
+
+    return $stid;
+}
+
 function delete_user($FID){
     if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
         return false;
@@ -319,6 +396,9 @@ function delete_user($FID){
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
     }
     oci_close($conn);
+
+    delete_statistics($FID);
+
     return $stid;
 }
 
