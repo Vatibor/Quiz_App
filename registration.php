@@ -34,10 +34,21 @@ if (isset($_POST["submit"])) { // submit pressed
   $name = $_POST["name"];
   $password = $_POST["password"];
   $password2 = $_POST["password2"];
-  $id = 1;
+  $id = 0;
+
+  $userIDs = array();
+
+  while ($oneRow = oci_fetch_array($users, OCI_ASSOC + OCI_RETURN_NULLS)) {
+    array_push($userIDs, $oneRow["FID"]);
+  }
+
+  while(in_array($id, $userIDs)){
+    $id++;
+  }
+
+
   //  Username check.
   while ($oneRow = oci_fetch_array($users, OCI_ASSOC + OCI_RETURN_NULLS)) {
-    $id++;
     if ($oneRow["NEV"] === $name) // If the name provided in the form matches that of a registered user...
       $errors[] = "The username is already taken!";
   }
