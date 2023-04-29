@@ -322,4 +322,26 @@ function delete_user($FID){
     return $stid;
 }
 
+function modify_user($modUserID, $modUsername){
+    if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
+        return false;
+    }
+
+    $stid = oci_parse($conn, 'UPDATE Felhasznalo SET nev = :1 WHERE FID = :2');
+    oci_bind_by_name($stid, ':1', $modUsername);
+    oci_bind_by_name($stid, ':2', $modUserID);
+
+    if (!$stid) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    $r = oci_execute($stid);
+    if (!$r) {
+        $e = oci_error($stid);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    oci_close($conn);
+    return $stid;
+}
+
 ?>

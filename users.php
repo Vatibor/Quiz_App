@@ -40,7 +40,7 @@ include_once('functions.php');
           while ($oneRow = oci_fetch_array($users, OCI_ASSOC + OCI_RETURN_NULLS)) {
             echo '<tr>';
             echo '<td class="align-middle">' . $oneRow["NEV"] . '</td>';
-            echo '<td class="w-10"><button type="button" class="btn btn-warning" data-bs-toggle="modal" data-id="' . $oneRow["NEV"] . '" data-bs-target="#exampleModal">Modify</button></td>';
+            echo '<td class="w-10"><button type="button" class="btn btn-warning" data-bs-toggle="modal" data-username="' . $oneRow["NEV"] . '" data-id="' . $oneRow["FID"] . '" data-bs-target="#exampleModal">Modify</button></td>';
             echo '
               <td class="w-10">
                 <form method="POST" action=deleteuser.php>
@@ -68,11 +68,20 @@ include_once('functions.php');
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <input type="text" name="userName" id="userName" value=""/>
+            <!-- <input type="text" name="userName" id="userName" value=""/> -->
+            
+            <form method="POST" action=modifyuser.php>
+              <input type="hidden" name="id" id="id" value="" />
+              <input type="text" name="userName" id="userName" value=""/>
+            
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            
+              <input type="submit" class="btn btn-primary" value="Save changes"></input>
+            </form>
+            
           </div>
         </div>
       </div>
@@ -84,8 +93,10 @@ include_once('functions.php');
 
   <script>
     $(document).on("click", ".btn-warning", function () {
-      var myUserName = $(this).data('id');
+      var myUserName = $(this).data('username');
+      var myID = $(this).data('id');
       $(".modal-body #userName").val(myUserName);
+      $(".modal-body #id").val(myID);
     });
   </script>
 
