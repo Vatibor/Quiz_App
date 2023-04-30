@@ -61,8 +61,13 @@ function getStatistic()
         return false;
     }
 
-    $stid = oci_parse($conn, 'SELECT nev, helyes_v_szam, megval_k_szam
-    FROM Felhasznalo JOIN Statisztika ON Felhasznalo.FID = Statisztika.SID');
+    $stid = oci_parse($conn, 'SELECT Felhasznalo.nev, Statisztika.helyes_v_szam, Statisztika.megval_k_szam
+    FROM Statisztika
+    INNER JOIN Felhasznalo ON Statisztika.SID = Felhasznalo.FID
+    ORDER BY Statisztika.helyes_v_szam DESC');
+
+    // $stid = oci_parse($conn, 'SELECT nev, helyes_v_szam, megval_k_szam
+    // FROM Felhasznalo JOIN Statisztika ON Felhasznalo.FID = Statisztika.SID');
 
     if (!$stid) {
         $e = oci_error($conn);

@@ -2,6 +2,10 @@
 session_start();
 include_once('data.php');
 include_once ('functions.php');
+
+if (!isset($_SESSION["user"])) {
+  header('Location: login.php');
+}
 ?>
 <!DOCTYPE html>
 <head>
@@ -20,21 +24,16 @@ include_once ('functions.php');
   <header>
     <?php include 'menu.php'; ?>
   </header>
-  <main>
-    <h1>Quiz App</h1>
-    <?php if (isset($_SESSION["user"])) {
-      echo '<pre>';
-      print_r($_SESSION["user"]);
-      echo '</pre>';
-      echo '<pre>';
-      print_r($_SESSION["admine"]);
-      echo '</pre>';
-
-      if (!isset($_SESSION["pontszam"])){
-        $_SESSION["pontszam"] = 0;
-      }
-      echo $_SESSION["pontszam"];
+  <main class="container">
+    <h1 class="text-center p-3">Quiz App - Welcome <?php echo $_SESSION["user"] ?>!</h1>
+    <?php 
+    if ($_SESSION["admine"]) {
+      echo '<p>You are logged in an Admin account!</p>';
     }
+    if (!isset($_SESSION["pontszam"])){
+      $_SESSION["pontszam"] = 0;
+    }
+    echo '<p>Your last Quiz result: ' .  $_SESSION["pontszam"] . '</p>';
     ?>
     <br>
     <form action="index.php" method="post">
@@ -65,7 +64,7 @@ include_once ('functions.php');
   </main>
 
   <!-- Game -->
-  <div>
+  <div class="container">
     <?php
 
     if(isset($_POST["difficulty"]) && $_POST["difficulty"]=="easy"){
@@ -104,7 +103,7 @@ include_once ('functions.php');
         echo '<input type="hidden" name="valasz' . $i . '" value="' . $questionarray["helyes_v"] . '"><input type="hidden" name="sorszam" value="' . $i . '">';
         echo '</div>';
       }
-      echo '<input type="submit" value="Let\'s Go">';
+      echo '<input class="mt-3 mb-5" type="submit" value="Let\'s Go">';
       echo '</form>';
     }
 
