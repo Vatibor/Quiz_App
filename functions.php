@@ -2,7 +2,7 @@
 
 function connect_db()
 {
-    $conn = oci_connect('VARGA', 'varga', 'localhost/XE', 'AL32UTF8');
+    $conn = oci_connect('system', 'oracle', 'localhost/XE', 'AL32UTF8');
     if (!$conn) {
         $e = oci_error();
         trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
@@ -10,7 +10,24 @@ function connect_db()
     return $conn;
 }
 ;
+function getSuccesrate($session){
+    $conn = connect_db();
+    if (!$conn) {
+        die("Sikertelen kapcsolódás az adatbázishoz.");
+    }
 
+    $stid = oci_parse($conn, 'SELECT get_success_rate(s.sid) as success_rate FROM felhasznalo f, statisztika s, statisztikaja st WHERE f.fid = :1 AND st.sid = s.sid AND st.fid = f.fid');
+    oci_bind_by_name($stid, ":1", $session);
+    var_dump($session);
+    oci_execute($stid);
+
+    $result = oci_fetch_array($stid, OCI_ASSOC);
+
+    oci_free_statement($stid);
+    oci_close($conn);
+
+    return number_format($result['SUCCESS_RATE'], 2);;
+}
 function getQuestions()
 {
     if (!($conn = connect_db())) { // If we couldn't connect, then we return false.

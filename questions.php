@@ -81,16 +81,21 @@ include_once('functions.php');
         echo '<td>' . $oneRow["D_VALASZ"] . '</td>';
         echo '<td>' . $oneRow["NEV"] . '</td>';
         echo '<td>' . $oneRow["SZINT"] . '</td>';
-        echo '</tr>';
-        echo '<td>' . $oneRow["SZINT"] . '</td>';
         echo '<td>';
         echo '<form action="questionDel.php" method="POST">';
         echo '<input type="hidden" name="kerdes" value="' . $oneRow['KERDES'] . '">';
-        echo '<button type="submit">Törlés</button>';
+        echo '<button type="submit" class="btn btn-danger">Delete</button>';
+        echo '</form>';
+        echo '</td>';
+        echo '<td>';
+        echo '<form action="questionModify.php" method="POST">';
+        echo '<input type="hidden" name="kerdes" value="' . $oneRow['KERDES'] . '">';
+        echo '<label>New difficulty</label>';
+        echo '<input type="number" min="1" max="3" name="szint" value="' . $oneRow['SZINT'] . '">';
+        echo '<button type="submit" class="btn btn-warning">Modify</button>';
         echo '</form>';
         echo '</td>';
         echo '</tr>';
-
       }
       oci_free_statement($questions);
       ?>

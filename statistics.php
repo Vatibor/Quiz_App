@@ -46,7 +46,8 @@ include_once('functions.php');
                 echo '<td>' . $oneRow["NEV"] . '</td>';
                 echo '<td>' . $oneRow["HELYES_V_SZAM"] . '</td>';
                 echo '<td>' . $oneRow["MEGVAL_K_SZAM"] . '</td>';
-                echo '<td></td>';
+                $succesrate = getSuccesrate($_SESSION["id"]);
+                echo '<td>' . $succesrate . '%</td>';
                 echo '<td></td>';
                 echo '</tr>';
             }
