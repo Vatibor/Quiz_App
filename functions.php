@@ -518,4 +518,87 @@ function update_statistics($id, $score){
 }
 
 
+//function countCategory($categoryName, $userName){
+//    if (!($conn = connect_db())) {
+//        return false;
+//    }
+//
+//    $stid = oci_parse($conn,
+//        'SELECT COUNT(valaszt) from valaszt where FID = :2');
+//
+//    oci_bind_by_name($stid,':2',$userID);
+//
+//    if($stid == 0 ){ //null
+//        $new = oci_parse($conn,'INSERT INTO VALASZT (KAID, FID, VALASZT) VALUES (:1, :2, 1)');
+//
+//        oci_bind_by_name($new,':1',$categoryID);
+//        oci_bind_by_name($new,':2',$userID);
+//
+//
+//        if (!$new) {
+//            $e2 = oci_error($conn);
+//            trigger_error(htmlentities($e2['message'], ENT_QUOTES), E_USER_ERROR);
+//        }
+//        $r2 = oci_execute($new);
+//        if (!$r2) {
+//            $e2 = oci_error($new);
+//            trigger_error(htmlentities($e2['message'], ENT_QUOTES), E_USER_ERROR);
+//        }
+//
+//        return $new;
+//    }else{
+//        $plus = oci_parse($conn,'UPDATE valaszt SET valaszt = valaszt + 1 WHERE kaid = :1 and fid = :2');
+//
+//        oci_bind_by_name($plus,':1',$categoryID);
+//        oci_bind_by_name($plus,':2',$userID);
+//
+//        if (!$plus) {
+//            $e3 = oci_error($conn);
+//            trigger_error(htmlentities($e3['message'], ENT_QUOTES), E_USER_ERROR);
+//        }
+//        $r3 = oci_execute($plus);
+//        if (!$r3) {
+//            $e3 = oci_error($plus);
+//            trigger_error(htmlentities($e3['message'], ENT_QUOTES), E_USER_ERROR);
+//        }
+//
+//        return $plus;
+//    }
+//
+//    $categoryData = getCategory();
+//    while ($cdata = oci_fetch_array($categoryData, OCI_ASSOC + OCI_RETURN_NULLS)) {
+//        if ($cdata["NEV"] === $categoryName){
+//            $categoryID = $cdata["KAID"];
+//        }
+//    }
+//
+//    $userData = getUsernames();
+//    while ($data = oci_fetch_array($userData, OCI_ASSOC + OCI_RETURN_NULLS)) {
+//        if ($data["NEV"] === $userName){
+//            $userID = $data["FID"];
+//        }
+//    }
+//
+//    if (!$stid) {
+//        $e = oci_error($conn);
+//        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+//    }
+//    $r = oci_execute($stid);
+//    if (!$r) {
+//        $e = oci_error($stid);
+//        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+//    }
+//
+//    oci_close($conn);
+//    return $stid;
+//
+//    //    if ($categoryName == 'History'){ $categoryID = 01;}
+////    if ($categoryName == 'General Knowledge'){ $categoryID = 02;}
+////    if ($categoryName == 'Music'){ $categoryID = 03;}
+////    if ($categoryName == 'Sport'){ $categoryID = 04;}
+////    if ($categoryName == 'Science'){ $categoryID = 05;}
+//    //$key = array_search($categoryName, $kat);
+//
+//}
+
 ?>
