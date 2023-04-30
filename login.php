@@ -18,6 +18,7 @@ if (isset($_POST["login"])) {
     while ($oneRow = oci_fetch_array($users, OCI_ASSOC + OCI_RETURN_NULLS)) {
       if ($oneRow["NEV"] === $name && $oneRow["JELSZO"] === $password) { // If the name provided in the form matches that of a registered user...
         $message = "Login successful!";
+        $_SESSION["id"] = $oneRow["FID"];
         $_SESSION["user"] = $oneRow["NEV"];
         $_SESSION["admine"] = $oneRow["ADMINE"];
         header("Location: index.php");

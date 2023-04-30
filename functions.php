@@ -424,4 +424,49 @@ function modify_user($modUserID, $modUsername){
     return $stid;
 }
 
+function update_statistics($id, $score){
+    if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
+        return false;
+    }
+
+    $stid = oci_parse($conn, 'SELECT HELYES_V_SZAM, MEGVAL_K_SZAM FROM Statisztika WHERE SID = :1');
+    oci_bind_by_name($stid, ':1', $id);
+
+    if (!$stid) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    $r = oci_execute($stid);
+    if (!$r) {
+        $e = oci_error($stid);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+
+    $getstatisticsByID = oci_fetch_array($stid, OCI_ASSOC + OCI_RETURN_NULLS);
+
+
+    $questionsnum = $getstatisticsByID["MEGVAL_K_SZAM"] + 5;
+    $correctquestionnum = $getstatisticsByID["HELYES_V_SZAM"] + $_SESSION["pontszam"];
+
+    $stid = oci_parse($conn, 'UPDATE Statisztika SET helyes_v_szam = :1, megval_k_szam = :2 
+    WHERE SID = :3');
+    oci_bind_by_name($stid, ':1', $correctquestionnum);
+    oci_bind_by_name($stid, ':2', $questionsnum);
+    oci_bind_by_name($stid, ':3', $id);
+    // oci_bind_by_name($stid, ':4', $id);
+
+    if (!$stid) {
+        $e = oci_error($conn);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    $r = oci_execute($stid);
+    if (!$r) {
+        $e = oci_error($stid);
+        trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+    oci_close($conn);
+    return $stid;
+}
+
+
 ?>
