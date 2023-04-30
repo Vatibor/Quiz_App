@@ -9,7 +9,6 @@ function connect_db()
     }
     return $conn;
 }
-;
 function getSuccesrate($session){
     $conn = connect_db();
     if (!$conn) {
@@ -316,7 +315,35 @@ function addNewUser($id, $name, $password)
     return $success;
 
 }
+function update_category($id, $category){
+    $conn = connect_db();
+    $category=ucfirst(strtolower($category));
+    // keresd meg a kategória KAID értékét
+    $sql = "SELECT kaid FROM Kategoria WHERE nev = :nev";
+    $stmt = oci_parse($conn, $sql);
+    oci_bind_by_name($stmt, ":nev", $category);
+    oci_execute($stmt);
+    $result = oci_fetch_assoc($stmt);
+    $kaid = $result["KAID"];
 
+    // a kapott KAID és az adott fid alapján frissítsd vagy inserteld az adatot
+    $sql = "MERGE INTO valaszt
+            USING (SELECT :kaid AS kaid, :fid AS fid FROM dual) src
+            ON (valaszt.kaid = src.kaid AND valaszt.fid = src.fid)
+            WHEN MATCHED THEN
+              UPDATE SET valaszt = valaszt + 1
+            WHEN NOT MATCHED THEN
+              INSERT (kaid, fid, valaszt)
+              VALUES (src.kaid, src.fid, 1)";
+    $stmt = oci_parse($conn, $sql);
+    oci_bind_by_name($stmt, ":kaid", $kaid);
+    oci_bind_by_name($stmt, ":fid", $id);
+    $result = oci_execute($stmt);
+
+    oci_free_statement($stmt);
+    oci_close($conn);
+    return $result;
+}
 function setQuestions($chosencategory, $chosendifficulty){
     if (!($conn = connect_db())) { // If we couldn't connect, then we return false.
         return false;
