@@ -25,32 +25,32 @@ include_once('functions.php');
   </header>
 
   <main>
-    <form method="post">
-      <!-- Choose category -->
+    <!-- <form method="post">
+      Choose category
       <label for="category">Category:</label>
-      <select id="category" name="category">
+      <select id="category" name="category"> -->
         <?php
-        $categories = getCategory();
-        while ($oneRow = oci_fetch_array($categories, OCI_ASSOC + OCI_RETURN_NULLS)) {
-          echo "<option value='" . strtolower($oneRow["NEV"]) . "'>" . $oneRow["NEV"] . "</option>";
-        }
+      //  $categories = getCategory();
+      //  while ($oneRow = oci_fetch_array($categories, OCI_ASSOC + OCI_RETURN_NULLS)) {
+      //    echo "<option value='" . strtolower($oneRow["NEV"]) . "'>" . $oneRow["NEV"] . "</option>";
+      //  }
         ?>
-      </select>
+      <!-- </select>  -->
 
       <!-- Choose difficulty -->
-      <label for="difficulty">Difficulty:</label>
-      <select id="difficulty" name="difficulty">
+      <!-- <label for="difficulty">Difficulty:</label>
+      <select id="difficulty" name="difficulty"> -->
         <?php
-        $difficulties = getDifficulty();
-        foreach ($difficulties as $difficulty) {
-          echo "<option value='" . strtolower($difficulty) . "'>" . $difficulty . "</option>";
-        }
+      //  $difficulties = getDifficulty();
+      //  foreach ($difficulties as $difficulty) {
+      //    echo "<option value='" . strtolower($difficulty) . "'>" . $difficulty . "</option>";
+      //  }
         ?>
-      </select>
+      <!-- </select>
       <br><br>
       <input type="submit" value="Start">
     </form>
-    <hr />
+    <hr /> -->
     <h1>Questions list</h1>
     <table border="1">
       <tr>
@@ -58,6 +58,7 @@ include_once('functions.php');
         <th colspan="4">Answers</th>
         <th>Category</th>
         <th>Difficulty</th>
+        <th colspan="2"></th>
       </tr>
 
       <?php
